@@ -111,9 +111,19 @@ class ModularAnatomyElement extends HTMLElement {
     const root = document.createElement('div');
     root.className = 'modular-anatomy';
     root.append(styleNode());
+    const header = document.createElement('div');
+    header.className = 'header';
     const title = document.createElement('h2');
     title.textContent = 'Modular Anatomy';
-    root.append(title);
+    header.append(title);
+    if (this.props?.onClose) {
+      const back = document.createElement('button');
+      back.type = 'button';
+      back.textContent = 'Back to Agents';
+      back.addEventListener('click', () => this.props?.onClose?.());
+      header.append(back);
+    }
+    root.append(header);
 
     if (!this.props?.chatId) {
       root.append(message('Open this detail panel from an active Game.'));
@@ -244,8 +254,17 @@ function statusControls(statuses: readonly TemporaryStatus[], remove: (status_id
 function partsTable(body: AnatomyBody): HTMLElement {
   const section = document.createElement('section');
   section.append(heading('Body parts'));
+  const parts = body.permanent?.parts ?? [];
+  const index = document.createElement('ul');
+  index.className = 'part-index';
+  for (const part of parts) {
+    const item = document.createElement('li');
+    item.textContent = `${part.name} (${part.part_id})`;
+    index.append(item);
+  }
+  section.append(index);
   const effective = new Map((body.effective_parts ?? []).map((part) => [part.part_id, part]));
-  for (const baseline of body.permanent?.parts ?? []) {
+  for (const baseline of parts) {
     const article = document.createElement('article');
     article.append(heading(`${baseline.name} (${baseline.part_id})`));
     article.append(text(baseline.description));
@@ -295,10 +314,12 @@ function text(value: string): HTMLParagraphElement {
 function styleNode(): HTMLStyleElement {
   const style = document.createElement('style');
   style.textContent = `
-    .modular-anatomy { color: var(--fg); display: grid; gap: 0.75rem; font: inherit; }
+    .modular-anatomy { box-sizing: border-box; color: inherit; display: grid; gap: 0.75rem; font: inherit; max-height: 100%; overflow-y: auto; padding: 1rem; }
+    .modular-anatomy .header { align-items: center; display: flex; gap: 0.75rem; justify-content: space-between; }
     .modular-anatomy .controls, .modular-anatomy section, .modular-anatomy article { display: grid; gap: 0.5rem; }
     .modular-anatomy button, .modular-anatomy select { color: inherit; background: var(--surface); border: 1px solid var(--border); border-radius: 0.35rem; padding: 0.4rem; }
-    .modular-anatomy pre { overflow: auto; color: var(--muted); white-space: pre-wrap; }
+    .modular-anatomy pre { overflow: auto; color: inherit; opacity: 0.9; white-space: pre-wrap; }
+    .modular-anatomy .part-index { margin: 0; padding-left: 1.25rem; }
     .modular-anatomy .status { align-items: center; display: flex; gap: 0.5rem; justify-content: space-between; }
   `;
   return style;
