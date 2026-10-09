@@ -45,14 +45,29 @@ artifacts/modular-anatomy/release.json
 ```
 
 The ZIP is a schema-v2 capability package containing a self-contained `server.mjs`, browser `client.js`, `agents.json`, and generated hash/byte entries in `manifest.json`. It declares Capability API `1.66`, Engine range `2.5.0` through `<2.6.0`, and only the permissions used by the adapter: `agent-runtime`, `chat-read`, `storage`, `tools`, `prompt-context`, `routes`, and `ui`.
-
-To generate the normal catalog JSON, publish the ZIP and catalog directory at a real public HTTPS location, then run:
+To publish this repository's package through GitHub Pages:
 
 ```sh
-npm run catalog -- --base-url https://example.invalid/modular-anatomy/
+npm run catalog -- \
+  --base-url https://crashhermit.github.io/marinara-modular-anatomy/
 ```
 
-Replace the example URL with the actual public origin. The command does not upload files. No public origin is configured in this repository, so catalog installation has not been claimed or exercised here.
+The repository workflow publishes the catalog and ZIP automatically at:
+
+```text
+https://crashhermit.github.io/marinara-modular-anatomy/catalog.json
+https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.0.zip
+```
+
+Configure Marinara with:
+
+```sh
+MARINARA_AGENT_CATALOG_URL=https://crashhermit.github.io/marinara-modular-anatomy/catalog.json
+```
+
+The command does not upload files locally; GitHub Actions performs the public Pages deployment on pushes to `main`.
+
+For a different public origin, replace the example URL. No package is uploaded to or installed in the Marinara Engine repository.
 
 ## Standard Marinara installation
 
