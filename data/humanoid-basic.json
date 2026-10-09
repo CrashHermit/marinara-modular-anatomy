@@ -9,6 +9,7 @@
       "parent_id": null,
       "name": "Body",
       "description": "The full-body structural aggregate.",
+      "roles": ["aggregate"],
       "attributes": {
         "geometry": { "length": 180, "width": 50, "depth": 30, "shape": "aggregate" },
         "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
@@ -22,6 +23,7 @@
       "parent_id": "body",
       "name": "Torso",
       "description": "The trunk between the neck and pelvis.",
+      "roles": ["trunk"],
       "attributes": {
         "geometry": { "length": 60, "width": 40, "depth": 25, "shape": "tapered_box" },
         "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
@@ -35,6 +37,7 @@
       "parent_id": "torso",
       "name": "Left arm",
       "description": "A composite upper limb including the hand.",
+      "roles": ["limb"],
       "attributes": {
         "geometry": { "length": 60, "width": 10, "depth": 10, "shape": "tapered_cylinder" },
         "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
@@ -48,6 +51,7 @@
       "parent_id": "torso",
       "name": "Right arm",
       "description": "A composite upper limb including the hand.",
+      "roles": ["limb"],
       "attributes": {
         "geometry": { "length": 60, "width": 10, "depth": 10, "shape": "tapered_cylinder" },
         "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
@@ -61,6 +65,7 @@
       "parent_id": "torso",
       "name": "Left leg",
       "description": "A composite lower limb including the foot.",
+      "roles": ["limb"],
       "attributes": {
         "geometry": { "length": 90, "width": 15, "depth": 15, "shape": "tapered_cylinder" },
         "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
@@ -74,6 +79,7 @@
       "parent_id": "torso",
       "name": "Right leg",
       "description": "A composite lower limb including the foot.",
+      "roles": ["limb"],
       "attributes": {
         "geometry": { "length": 90, "width": 15, "depth": 15, "shape": "tapered_cylinder" },
         "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },

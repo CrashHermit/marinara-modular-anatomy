@@ -196,3 +196,44 @@ test('returned projections and copied statuses do not alias source data', () => 
   (sourceStatus.operations[0]?.value as string[]).push('fur');
   assert.deepEqual((anatomy.statuses[0]?.operations[0]?.value as readonly string[]), ['skin', 'scales']);
 });
+
+test('roles are authored node metadata and remain isolated through permanent edits', () => {
+  let anatomy = armFixture();
+  const roles = ['limb', 'opening'];
+  anatomy = changePermanentPart(anatomy, 'arm.left', [{ field: 'roles', op: 'set', value: roles }]);
+  roles.push('mutated-input');
+  assert.deepEqual(at(anatomy, 'arm.left', active).roles, ['limb', 'opening']);
+  assert.deepEqual(at(anatomy, 'arm.right', active).roles, ['limb']);
+  assert.deepEqual(dataset.parts.find((part) => part.part_id === 'arm.left')?.roles, ['limb']);
+});
+
+test('temporary roles apply at their start and disappear at their exclusive expiry', () => {
+  let anatomy = armFixture();
+  anatomy = applyStatus(anatomy, status('role-overlay', 'arm.left', start, end, [
+    { field: 'roles', op: 'set', value: ['limb', 'opening'] },
+  ]));
+  assert.deepEqual(at(anatomy, 'arm.left', { day: 1, hour: 7, minute: 59 }).roles, ['limb']);
+  assert.deepEqual(at(anatomy, 'arm.left', start).roles, ['limb', 'opening']);
+  assert.deepEqual(at(anatomy, 'arm.left', end).roles, ['limb']);
+});
+
+test('role removal reveals the current permanent roles beneath an overlay', () => {
+  let anatomy = changePermanentPart(armFixture(), 'arm.left', [{ field: 'roles', op: 'set', value: ['limb', 'altered'] }]);
+  anatomy = applyStatus(anatomy, status('role-overlay', 'arm.left', start, null, [
+    { field: 'roles', op: 'set', value: ['temporary'] },
+  ]));
+  anatomy = changePermanentPart(anatomy, 'arm.left', [{ field: 'roles', op: 'set', value: ['limb', 'permanent'] }]);
+  assert.deepEqual(at(anatomy, 'arm.left', active).roles, ['temporary']);
+  anatomy = removeStatus(anatomy, 'role-overlay');
+  assert.deepEqual(at(anatomy, 'arm.left', active).roles, ['limb', 'permanent']);
+});
+
+test('functions accept authored capability identifiers in permanent and temporary operations', () => {
+  let anatomy = changePermanentPart(armFixture(), 'arm.left', [{ field: 'functions', op: 'set', value: ['manipulation', 'secrete'] }]);
+  assert.deepEqual(at(anatomy, 'arm.left', active).attributes.functions, ['manipulation', 'secrete']);
+  anatomy = applyStatus(anatomy, status('function-overlay', 'arm.left', start, end, [
+    { field: 'functions', op: 'set', value: ['secrete'] },
+  ]));
+  assert.deepEqual(at(anatomy, 'arm.left', active).attributes.functions, ['secrete']);
+  assert.deepEqual(at(anatomy, 'arm.left', end).attributes.functions, ['manipulation', 'secrete']);
+});

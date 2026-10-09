@@ -4,7 +4,7 @@ Standalone TypeScript anatomy core and Marinara Engine capability package.
 
 ## What it owns
 
-The anatomy core stores a single-parent body hierarchy with stable part IDs, descriptions, geometry, composition fractions, stiffness, coverings, appearance fields, and `locomotion`/`manipulation` function tags. Permanent attributes are the baseline. Ordered temporary statuses are resolved against a caller-supplied game time; they do not mutate or undo the baseline.
+The anatomy core stores a single-parent body hierarchy with stable part IDs, descriptions, geometry, composition fractions, stiffness, coverings, appearance fields, authored `roles`, and extensible `functions`. Roles describe what a part is, while functions describe what it can do. Permanent attributes are the baseline. Ordered temporary statuses resolve against caller-supplied game time; they do not mutate or undo the baseline. Both roles and functions can be changed permanently or through temporary statuses.
 
 The authored effect catalog currently demonstrates:
 
@@ -40,7 +40,7 @@ npm run package
 `npm run package` produces:
 
 ```text
-artifacts/modular-anatomy/modular-anatomy-0.1.4.zip
+artifacts/modular-anatomy/modular-anatomy-0.1.5.zip
 artifacts/modular-anatomy/release.json
 ```
 
@@ -56,7 +56,7 @@ The repository workflow publishes the catalog and ZIP automatically at:
 
 ```text
 https://crashhermit.github.io/marinara-modular-anatomy/catalog.json
-https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.4.zip
+https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.5.zip
 ```
 
 Configure Marinara with:
@@ -80,7 +80,7 @@ For a different public origin, replace the example URL. No package is uploaded t
 
 The package is listed under Agents because that is Marinara's current installation and detail-panel surface. `execution: "feature"` plus `runtimeDisabled: true` means it contributes UI, tools, and read-only prompt context without being an autonomous pipeline Agent.
 
-The anatomy detail panel presents a readable body-part index followed by one card per permanent part. Each card shows the description, parent attachment, geometry, composition percentages, surface/mechanics, and anatomical functions. Baseline and currently effective values are shown together; temporary status rows show the affected part and native start/expiry time. The panel remains the supported current-surface UI and does not add a second Game screen.
+The anatomy detail panel presents a readable body-part index followed by one card per permanent part. Each card shows the description, parent attachment, geometry, composition percentages, surface/mechanics, roles, and anatomical functions. Baseline and currently effective values are shown together; temporary status rows show the affected part and native start/expiry time. The panel remains the supported current-surface UI and does not add a second Game screen.
 
 Expired temporary statuses remain stored for explicit removal and auditability, but the detail panel now labels them `Expired` once native numeric game time reaches their exclusive expiry. Their effective anatomy is no longer altered, as shown by the baseline/effective comparison.
 
@@ -100,9 +100,10 @@ Expired temporary statuses remain stored for explicit removal and auditability, 
 - `src/model.ts`, `src/anatomy.ts`, `src/time.ts`: standalone anatomy core.
 - `src/effects.ts`: standalone deterministic effect application.
 - `data/`: authored body template and demonstration effects.
+- `src/marinara/anatomy-document-upgrade.ts`: narrow legacy role migration at the stored-document boundary.
+- `src/marinara/body-parts-view.ts`: readable body-part card renderer.
 - `src/marinara/`: Marinara persistence, tools, prompt contributor, routes, and detail UI adapter.
 - `packages/modular-anatomy/agents.json`: feature definition shipped inside the package.
-- `scripts/build-package.mjs`: standard capability ZIP builder.
 - `scripts/build-catalog.mjs`: catalog generator; no upload logic.
 - `tests/`: permanent core/effect behavior tests.
 

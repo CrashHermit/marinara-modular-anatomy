@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-09T04:40:33.700Z",
+  "packages": [
+    {
+      "manifest": {
+        "schemaVersion": 2,
+        "id": "modular-anatomy",
+        "name": "Modular Anatomy",
+        "version": "0.1.5",
+        "description": "Deterministic persistent anatomy state and authored physical effects for active Marinara Games.",
+        "capabilityApi": {
+          "major": 1,
+          "minor": 66
+        },
+        "builtAgainst": {
+          "engineVersion": "2.5.0",
+          "engineCommit": "c56501495a8baf76c258e76534c8728a9b7859bb"
+        },
+        "engine": {
+          "min": "2.5.0",
+          "maxExclusive": "2.6.0"
+        },
+        "kind": [
+          "agent"
+        ],
+        "entrypoints": {
+          "server": "server.mjs",
+          "client": "client.js",
+          "agents": "agents.json"
+        },
+        "contributions": {
+          "agentDetail": {
+            "agentIds": [
+              "modular-anatomy"
+            ]
+          }
+        },
+        "files": [
+          {
+            "path": "server.mjs",
+            "sha256": "f46367ac1225894c434fc5509a652cad16b7c0fd17ee0ff8d6ea03a077bbdab9",
+            "bytes": 23449
+          },
+          {
+            "path": "client.js",
+            "sha256": "4c73d8969fbf8f111ac6f83ffe2203f538c6112172937fca3539b02297ac9770",
+            "bytes": 18258
+          },
+          {
+            "path": "agents.json",
+            "sha256": "6d651bb5c1afb7abb07a9c4a9cb2e432c0506f5c7a5e2dcb3cacd02e00ad0be5",
+            "bytes": 433
+          }
+        ],
+        "permissions": [
+          "agent-runtime",
+          "chat-read",
+          "storage",
+          "tools",
+          "prompt-context",
+          "routes",
+          "ui"
+        ],
+        "restartRequired": true
+      },
+      "category": "misc",
+      "artifact": {
+        "url": "https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.5.zip",
+        "sha256": "46193f7ed2bba2e824dff0cf9409a53d71ed31cab28964120073e47ddfccd38b",
+        "bytes": 10974
+      }
+    }
+  ],
+  "provenance": {
+    "kind": "custom",
+    "url": "https://crashhermit.github.io/marinara-modular-anatomy/"
+  }
+}

@@ -28,6 +28,7 @@ import type {
   MarinaraPackageContext,
   MarinaraPromptRequest,
 } from './contracts.js';
+import { upgradeAnatomyDocumentData } from './anatomy-document-upgrade.js';
 
 export const PACKAGE_ID = 'modular-anatomy';
 export const DOCUMENT_KIND = 'character-anatomy';
@@ -259,7 +260,7 @@ function asStoredDocument(document: MarinaraDocumentRecord): StoredAnatomyDocume
   const data = typeof document.data === 'string'
     ? JSON.parse(document.data) as AnatomyDocumentData
     : document.data as AnatomyDocumentData;
-  return { ...document, data };
+  return { ...document, data: upgradeAnatomyDocumentData(data, dataset) };
 }
 
 function bodyFromDocument(

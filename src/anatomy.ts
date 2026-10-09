@@ -13,6 +13,7 @@ type MutableBodyPart = {
   parent_id: string | null;
   name: string;
   description: string;
+  roles: string[];
   attributes: {
     geometry: {
       length: number;
@@ -30,7 +31,7 @@ type MutableBodyPart = {
       texture: string;
       markings: string[];
     };
-    functions: Array<'locomotion' | 'manipulation'>;
+    functions: string[];
   };
 };
 
@@ -87,6 +88,9 @@ function applyOperation(part: MutableBodyPart, operation: AttributeOperation): v
       return;
     case 'surface.markings':
       part.attributes.surface.markings = [...operation.value];
+      return;
+    case 'roles':
+      part.roles = [...operation.value];
       return;
     case 'functions':
       part.attributes.functions = [...operation.value];
