@@ -1,5 +1,6 @@
 {
   "template_id": "humanoid-functional-basic",
+  "name": "Basic humanoid",
   "units": {
     "length": "cm"
   },
@@ -7,8 +8,8 @@
     {
       "part_id": "body",
       "parent_id": null,
+      "placement": null,
       "name": "Body",
-      "description": "The full-body structural aggregate.",
       "roles": ["aggregate"],
       "attributes": {
         "geometry": { "length": 180, "width": 50, "depth": 30, "shape": "aggregate" },
@@ -21,8 +22,8 @@
     {
       "part_id": "torso",
       "parent_id": "body",
+      "placement": { "horizontal": 50, "vertical": 65, "depth": 50 },
       "name": "Torso",
-      "description": "The trunk between the neck and pelvis.",
       "roles": ["trunk"],
       "attributes": {
         "geometry": { "length": 60, "width": 40, "depth": 25, "shape": "tapered_box" },
@@ -35,8 +36,8 @@
     {
       "part_id": "arm.left",
       "parent_id": "torso",
+      "placement": { "horizontal": 0, "vertical": 90, "depth": 50 },
       "name": "Left arm",
-      "description": "A composite upper limb including the hand.",
       "roles": ["limb"],
       "attributes": {
         "geometry": { "length": 60, "width": 10, "depth": 10, "shape": "tapered_cylinder" },
@@ -49,8 +50,8 @@
     {
       "part_id": "arm.right",
       "parent_id": "torso",
+      "placement": { "horizontal": 100, "vertical": 90, "depth": 50 },
       "name": "Right arm",
-      "description": "A composite upper limb including the hand.",
       "roles": ["limb"],
       "attributes": {
         "geometry": { "length": 60, "width": 10, "depth": 10, "shape": "tapered_cylinder" },
@@ -63,8 +64,8 @@
     {
       "part_id": "leg.left",
       "parent_id": "torso",
+      "placement": { "horizontal": 25, "vertical": 0, "depth": 50 },
       "name": "Left leg",
-      "description": "A composite lower limb including the foot.",
       "roles": ["limb"],
       "attributes": {
         "geometry": { "length": 90, "width": 15, "depth": 15, "shape": "tapered_cylinder" },
@@ -77,8 +78,8 @@
     {
       "part_id": "leg.right",
       "parent_id": "torso",
+      "placement": { "horizontal": 75, "vertical": 0, "depth": 50 },
       "name": "Right leg",
-      "description": "A composite lower limb including the foot.",
       "roles": ["limb"],
       "attributes": {
         "geometry": { "length": 90, "width": 15, "depth": 15, "shape": "tapered_cylinder" },

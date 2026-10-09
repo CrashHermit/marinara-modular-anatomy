@@ -1,16 +1,21 @@
 import { randomUUID } from 'node:crypto';
 import datasetJson from '../../data/humanoid-basic.json' with { type: 'json' };
 import effectsJson from '../../data/anatomy-effects.json' with { type: 'json' };
+import capabilityDemoJson from '../../data/capability-demo.json' with { type: 'json' };
 import {
+  advanceCapabilities,
   applyAnatomyEffect,
-  createAnatomy,
+  createCapabilityState,
+  createAnatomyFromTemplate,
+  installCapabilityBundle,
   removeStatus,
-  resolveAnatomy,
 } from '../index.js';
 import type {
   Anatomy,
   AnatomyEffectDefinition,
-  BodyDataset,
+  AnatomyTemplate,
+  CapabilityState,
+  CapabilityBundle,
   GameTime,
   PermanentAnatomyEffectDefinition,
   TemporaryAnatomyEffectDefinition,
@@ -28,15 +33,16 @@ import type {
   MarinaraPackageContext,
   MarinaraPromptRequest,
 } from './contracts.js';
-import { upgradeAnatomyDocumentData } from './anatomy-document-upgrade.js';
+import { buildAnatomyBody } from './anatomy-body.js';
 
 export const PACKAGE_ID = 'modular-anatomy';
 export const DOCUMENT_KIND = 'character-anatomy';
 
 type StoredAnatomyDocument = MarinaraDocumentRecord & { readonly data: AnatomyDocumentData };
 
-const dataset = datasetJson as BodyDataset;
+const dataset = datasetJson as AnatomyTemplate;
 const effects = effectsJson as readonly AnatomyEffectDefinition[];
+const capabilityDemo = capabilityDemoJson as CapabilityBundle;
 
 export class AnatomyService {
   readonly api: MarinaraApi;
@@ -67,14 +73,15 @@ export class AnatomyService {
       const subject_info = findSubject(context.subjects, subject);
       const document_id = anatomyDocumentId(context.game_id, subject);
       const current = await this.getDocument(document_id);
-      if (current) return bodyFromDocument(asStoredDocument(current), subject_info, context.game_time, effects);
+      if (current) return buildAnatomyBody(asStoredDocument(current).data, subject_info, context.game_time, effects);
 
       const now = new Date().toISOString();
       const data: AnatomyDocumentData = {
         game_id: context.game_id,
         subject,
         template_id: dataset.template_id,
-        anatomy: createAnatomy(dataset.parts),
+        anatomy: createAnatomyFromTemplate(dataset),
+        capabilities: createCapabilityState(),
       };
       const created = await this.api.runtime.persistence.documents.create({
         id: document_id,
@@ -86,7 +93,7 @@ export class AnatomyService {
         createdAt: now,
         updatedAt: now,
       });
-      return bodyFromDocument(asStoredDocument(created), subject_info, context.game_time, effects);
+      return buildAnatomyBody(asStoredDocument(created).data, subject_info, context.game_time, effects);
     });
   }
 
@@ -103,11 +110,17 @@ export class AnatomyService {
         game_time: context.game_time,
         permanent: null,
         effective_parts: null,
+        baseline_descriptions: null,
+        effective_descriptions: null,
         effects,
         statuses: [],
+        capabilities: null,
+        baseline_capabilities: null,
+        effective_capabilities: null,
+        capability_demo_available: false,
       };
     }
-    return bodyFromDocument(asStoredDocument(current), subject_info, context.game_time, effects);
+    return buildAnatomyBody(asStoredDocument(current).data, subject_info, context.game_time, effects);
   }
 
   async applyEffect(
@@ -134,10 +147,11 @@ export class AnatomyService {
         const permanentDefinition = definition as PermanentAnatomyEffectDefinition;
         anatomy = applyAnatomyEffect(current.data.anatomy, permanentDefinition, part_id);
       }
-      const updated = await this.save(current, { ...current.data, anatomy });
+      const capabilities = settleBeforeAnatomyMutation(current.data.anatomy, current.data.capabilities, context.game_time);
+      const updated = await this.save(current, { ...current.data, anatomy, capabilities });
       return {
         status_id,
-        body: bodyFromDocument(updated, subject_info, context.game_time, effects),
+        body: buildAnatomyBody(updated.data, subject_info, context.game_time, effects),
       };
     });
   }
@@ -151,14 +165,52 @@ export class AnatomyService {
       const context = await this.enabledContext(chat_id);
       const subject_info = findSubject(context.subjects, subject);
       const current = await this.requireDocument(context.game_id, subject);
+      const capabilities = settleBeforeAnatomyMutation(current.data.anatomy, current.data.capabilities, context.game_time);
       const anatomy = removeStatus(current.data.anatomy, status_id);
-      const updated = await this.save(current, { ...current.data, anatomy });
+      const updated = await this.save(current, { ...current.data, anatomy, capabilities });
       return {
         status_id,
-        body: bodyFromDocument(updated, subject_info, context.game_time, effects),
+        body: buildAnatomyBody(updated.data, subject_info, context.game_time, effects),
       };
     });
   }
+  async installCapabilityDemo(chat_id: string, subject: AnatomySubject): Promise<AnatomyBody> {
+    return this.api.runtime.persistence.withChatLock(chat_id, async () => {
+      const context = await this.enabledContext(chat_id);
+      const subject_info = findSubject(context.subjects, subject);
+      const current = await this.requireDocument(context.game_id, subject);
+      if (current.data.template_id !== capabilityDemo.template_id) {
+        throw new Error('Capability demo requires the humanoid-functional-basic template.');
+      }
+      if (current.data.capabilities.installed_bundle_ids.includes(capabilityDemo.bundle_id)) {
+        return buildAnatomyBody(current.data, subject_info, context.game_time, effects);
+      }
+      const capabilities = settleBeforeAnatomyMutation(current.data.anatomy, current.data.capabilities, context.game_time);
+      const installed = installCapabilityBundle(current.data.anatomy, capabilities, capabilityDemo);
+      const updated = await this.save(current, {
+        ...current.data,
+        anatomy: installed.anatomy,
+        capabilities: installed.capabilities,
+      });
+      return buildAnatomyBody(updated.data, subject_info, context.game_time, effects);
+    });
+  }
+
+  async advanceCapabilities(chat_id: string, subject: AnatomySubject): Promise<AnatomyBody> {
+    return this.api.runtime.persistence.withChatLock(chat_id, async () => {
+      const context = await this.enabledContext(chat_id);
+      const subject_info = findSubject(context.subjects, subject);
+      const current = await this.requireDocument(context.game_id, subject);
+      const now = requireCapabilityTime(context.game_time);
+      const capabilities = advanceCapabilities(current.data.anatomy, current.data.capabilities, now);
+      if (capabilities === current.data.capabilities) {
+        return buildAnatomyBody(current.data, subject_info, context.game_time, effects);
+      }
+      const updated = await this.save(current, { ...current.data, capabilities });
+      return buildAnatomyBody(updated.data, subject_info, context.game_time, effects);
+    });
+  }
+
 
   async contributePrompt(request: MarinaraPromptRequest): Promise<string | null> {
     if (request.mode !== 'game') return null;
@@ -174,15 +226,17 @@ export class AnatomyService {
       const current = await this.getDocument(anatomyDocumentId(context.game_id, subject));
       if (!current) continue;
       const stored = asStoredDocument(current);
-      const anatomy = stored.data.anatomy;
-      const parts = context.game_time ? resolveAnatomy(anatomy, context.game_time) : anatomy.parts;
+      const body = buildAnatomyBody(stored.data, subject, context.game_time, effects);
       blocks.push(
         JSON.stringify({
           subject,
-          template_id: stored.data.template_id,
+          template_id: body.template_id,
           values: context.game_time ? 'effective' : 'permanent baseline; not resolved against native time',
-          parts,
-          statuses: anatomy.statuses,
+          parts: context.game_time ? body.effective_descriptions : body.baseline_descriptions,
+          statuses: body.statuses,
+          capabilities: body.capabilities,
+          baseline_capabilities: body.baseline_capabilities,
+          effective_capabilities: body.effective_capabilities,
         }),
       );
     }
@@ -260,27 +314,9 @@ function asStoredDocument(document: MarinaraDocumentRecord): StoredAnatomyDocume
   const data = typeof document.data === 'string'
     ? JSON.parse(document.data) as AnatomyDocumentData
     : document.data as AnatomyDocumentData;
-  return { ...document, data: upgradeAnatomyDocumentData(data, dataset) };
+  return { ...document, data };
 }
 
-function bodyFromDocument(
-  document: StoredAnatomyDocument,
-  subject: AnatomySubjectInfo,
-  game_time: GameTime | null,
-  available_effects: readonly AnatomyEffectDefinition[],
-): AnatomyBody {
-  return {
-    state: game_time ? 'ready' : 'clock_uninitialized',
-    game_id: document.data.game_id,
-    subject,
-    template_id: document.data.template_id,
-    game_time,
-    permanent: document.data.anatomy,
-    effective_parts: game_time ? resolveAnatomy(document.data.anatomy, game_time) : null,
-    effects: available_effects,
-    statuses: document.data.anatomy.statuses,
-  };
-}
 
 function readMetadata(metadata: unknown): Record<string, unknown> {
   return typeof metadata === 'string' ? JSON.parse(metadata) as Record<string, unknown> : metadata as Record<string, unknown>;
@@ -304,6 +340,15 @@ function resourceName(data: unknown): string {
 
 function requireGameTime(game_time: GameTime | null): GameTime {
   if (!game_time) throw new Error('Initialize the native Game clock before applying a temporary anatomy effect.');
+  return game_time;
+}
+function settleBeforeAnatomyMutation(anatomy: Anatomy, capabilities: CapabilityState, game_time: GameTime | null): CapabilityState {
+  if (!capabilities.definitions.length) return capabilities;
+  return advanceCapabilities(anatomy, capabilities, requireCapabilityTime(game_time));
+}
+
+function requireCapabilityTime(game_time: GameTime | null): GameTime {
+  if (!game_time) throw new Error('Initialize the native Game clock before advancing capabilities.');
   return game_time;
 }
 

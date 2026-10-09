@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-09T04:40:33.700Z",
+  "generatedAt": "2026-10-09T17:00:40.908Z",
   "packages": [
     {
       "manifest": {
         "schemaVersion": 2,
         "id": "modular-anatomy",
         "name": "Modular Anatomy",
-        "version": "0.1.5",
+        "version": "0.1.6",
         "description": "Deterministic persistent anatomy state and authored physical effects for active Marinara Games.",
         "capabilityApi": {
           "major": 1,
@@ -39,13 +39,13 @@
         "files": [
           {
             "path": "server.mjs",
-            "sha256": "f46367ac1225894c434fc5509a652cad16b7c0fd17ee0ff8d6ea03a077bbdab9",
-            "bytes": 23449
+            "sha256": "e6303d8e92a74b9cf77315290756b9762032ca1f0a050430ea1f245d6e557f9a",
+            "bytes": 35804
           },
           {
             "path": "client.js",
-            "sha256": "4c73d8969fbf8f111ac6f83ffe2203f538c6112172937fca3539b02297ac9770",
-            "bytes": 18258
+            "sha256": "bbf83e351c1304159c6f0ead6dd83f61d4f6aa5414b3d04f5fc13aa39b3a210b",
+            "bytes": 27048
           },
           {
             "path": "agents.json",
@@ -66,9 +66,9 @@
       },
       "category": "misc",
       "artifact": {
-        "url": "https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.5.zip",
-        "sha256": "46193f7ed2bba2e824dff0cf9409a53d71ed31cab28964120073e47ddfccd38b",
-        "bytes": 10974
+        "url": "https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.6.zip",
+        "sha256": "628a00a420bc2ad21654c600ae9eeb86f132615c79f840179d4c2cc08173eb2a",
+        "bytes": 14516
       }
     }
   ],

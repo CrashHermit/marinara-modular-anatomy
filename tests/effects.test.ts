@@ -7,7 +7,7 @@ import {
   resolveAnatomy,
   type Anatomy,
   type AnatomyEffectDefinition,
-  type BodyDataset,
+  type AnatomyTemplate,
   type BodyPart,
   type GameTime,
   type PermanentAnatomyEffectDefinition,
@@ -15,7 +15,7 @@ import {
 } from '../src/index.js';
 import datasetJson from '../data/humanoid-basic.json' with { type: 'json' };
 
-const dataset = datasetJson as BodyDataset;
+const dataset = datasetJson as AnatomyTemplate;
 const at = (anatomy: Anatomy, part_id: string, now: GameTime): BodyPart =>
   resolveAnatomy(anatomy, now).find((part) => part.part_id === part_id) as BodyPart;
 const temporary = (

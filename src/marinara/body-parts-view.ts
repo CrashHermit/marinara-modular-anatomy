@@ -15,12 +15,17 @@ export function partsTable(body: AnatomyBody): HTMLElement {
   }
   section.append(index);
   const effective = new Map((body.effective_parts ?? []).map((part) => [part.part_id, part]));
+  const descriptions = new Map(
+    (body.effective_parts ? body.effective_descriptions : body.baseline_descriptions)?.map((description) => [description.part_id, description])
+      ?? [],
+  );
   for (const baseline of parts) {
     const current = effective.get(baseline.part_id);
     const article = document.createElement('article');
     article.className = 'part-card';
     article.append(heading(`${baseline.name} (${baseline.part_id})`));
-    article.append(text(baseline.description));
+    const description = descriptions.get(baseline.part_id)!;
+    article.append(text(`${body.effective_parts ? 'Current' : 'Baseline'} description: ${description.text}`));
     if (baseline.parent_id) article.append(message(`Attached to: ${parentNames.get(baseline.parent_id) ?? baseline.parent_id}`));
     article.append(attributeGroup('Geometry', [
       ['Length', `${formatNumber(baseline.attributes.geometry.length)} cm`, current ? `${formatNumber(current.attributes.geometry.length)} cm` : null],

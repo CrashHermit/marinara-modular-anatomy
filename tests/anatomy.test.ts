@@ -9,13 +9,13 @@ import {
   resolveAnatomy,
   type Anatomy,
   type AttributeOperation,
-  type BodyDataset,
+  type AnatomyTemplate,
   type BodyPart,
   type GameTime,
   type TemporaryStatus,
 } from '../src/index.js';
 
-const dataset = JSON.parse(await readFile(new URL('../../data/humanoid-basic.json', import.meta.url), 'utf8')) as BodyDataset;
+const dataset = JSON.parse(await readFile(new URL('../../data/humanoid-basic.json', import.meta.url), 'utf8')) as AnatomyTemplate;
 const at = (anatomy: Anatomy, part_id: string, now: GameTime): BodyPart =>
   resolveAnatomy(anatomy, now).find((part) => part.part_id === part_id) as BodyPart;
 const status = (
@@ -65,6 +65,33 @@ test('operations compose in application order and target only one part', () => {
     { field: 'geometry.length', op: 'multiply', value: 2 },
   ]));
   assert.equal(at(multiply, 'arm.left', active).attributes.geometry.length, 126);
+});
+
+test('placement operations change attachment location without moving other parts', () => {
+  let anatomy = armFixture();
+  anatomy = changePermanentPart(anatomy, 'arm.left', [{ field: 'placement.horizontal', op: 'set', value: 25 }]);
+  anatomy = applyStatus(anatomy, status('placement-overlay', 'arm.left', start, end, [
+    { field: 'placement.horizontal', op: 'add', value: 10 },
+  ]));
+  assert.equal(at(anatomy, 'arm.left', { day: 1, hour: 7, minute: 59 }).placement?.horizontal, 25);
+  assert.equal(at(anatomy, 'arm.left', active).placement?.horizontal, 35);
+  assert.equal(at(anatomy, 'arm.left', end).placement?.horizontal, 25);
+  assert.equal(at(anatomy, 'arm.right', active).placement?.horizontal, 100);
+  assert.equal(anatomy.parts.find((part) => part.part_id === 'arm.left')?.attributes.geometry.length, 60);
+  assert.equal(dataset.parts.find((part) => part.part_id === 'arm.left')?.placement?.horizontal, 0);
+});
+
+test('whole placement replacement is isolated and roots retain null placement', () => {
+  const anatomy = changePermanentPart(armFixture(), 'arm.left', [
+    { field: 'placement', op: 'set', value: { horizontal: 40, vertical: 80, depth: 60 } },
+  ]);
+  const left = anatomy.parts.find((part) => part.part_id === 'arm.left')!;
+  assert.deepEqual(left.placement, { horizontal: 40, vertical: 80, depth: 60 });
+  assert.equal(anatomy.parts.find((part) => part.part_id === 'body')?.placement, null);
+  const replacement = { horizontal: 10, vertical: 20, depth: 30 };
+  const copied = changePermanentPart(armFixture(), 'arm.left', [{ field: 'placement', op: 'set', value: replacement }]);
+  replacement.horizontal = 90;
+  assert.equal(copied.parts.find((part) => part.part_id === 'arm.left')?.placement?.horizontal, 10);
 });
 
 test('status intervals include the start and exclude the expiration across midnight', () => {

@@ -1,5 +1,6 @@
 import type { AnatomyBody, AnatomyContext, AnatomySubjectInfo } from './contracts.js';
 import { partsTable } from './body-parts-view.js';
+import { capabilitiesView } from './capabilities-view.js';
 import type { TemporaryStatus } from '../index.js';
 
 interface HostCapabilityProps {
@@ -83,6 +84,21 @@ class ModularAnatomyElement extends HTMLElement {
       subject_id: this.subject.id,
       part_id,
       effect_id,
+    });
+  }
+  private async installCapabilityDemo(): Promise<void> {
+    if (!this.props?.chatId || !this.subject) return;
+    await this.mutate('/body/capabilities/install-demo', {
+      subject_kind: this.subject.kind,
+      subject_id: this.subject.id,
+    });
+  }
+
+  private async advanceCapabilities(): Promise<void> {
+    if (!this.props?.chatId || !this.subject) return;
+    await this.mutate('/body/capabilities/advance', {
+      subject_kind: this.subject.kind,
+      subject_id: this.subject.id,
     });
   }
 
@@ -198,6 +214,7 @@ class ModularAnatomyElement extends HTMLElement {
     root.append(effectControls(this.body, (part_id, effect_id) => void this.applyEffect(part_id, effect_id)));
     root.append(statusControls(this.body.statuses, this.body.game_time, (status_id) => void this.removeStatus(status_id)));
     root.append(partsTable(this.body));
+    root.append(capabilitiesView(this.body, () => void this.installCapabilityDemo(), () => void this.advanceCapabilities()));
     this.replaceChildren(root);
   }
 

@@ -2,7 +2,10 @@ import type {
   Anatomy,
   AnatomyEffectDefinition,
   BodyPart,
+  CapabilityState,
   GameTime,
+  PartDescription,
+  ResolvedPartCapability,
   TemporaryStatus,
 } from '../index.js';
 
@@ -127,6 +130,7 @@ export interface AnatomyDocumentData {
   readonly subject: AnatomySubject;
   readonly template_id: string;
   readonly anatomy: Anatomy;
+  readonly capabilities: CapabilityState;
 }
 
 export interface AnatomyContext {
@@ -147,8 +151,14 @@ export interface AnatomyBody {
   readonly game_time: GameTime | null;
   readonly permanent: Anatomy | null;
   readonly effective_parts: readonly BodyPart[] | null;
+  readonly baseline_descriptions: readonly PartDescription[] | null;
+  readonly effective_descriptions: readonly PartDescription[] | null;
   readonly effects: readonly AnatomyEffectDefinition[];
   readonly statuses: readonly TemporaryStatus[];
+  readonly capabilities: CapabilityState | null;
+  readonly baseline_capabilities: readonly ResolvedPartCapability[] | null;
+  readonly effective_capabilities: readonly ResolvedPartCapability[] | null;
+  readonly capability_demo_available: boolean;
 }
 
 export interface AnatomyStatusRemovalResult {

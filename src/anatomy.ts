@@ -4,6 +4,7 @@ import type {
   BodyPart,
   GameTime,
   PartComposition,
+  PartPlacement,
   TemporaryStatus,
 } from './model.js';
 import { toGameMinutes } from './time.js';
@@ -11,8 +12,8 @@ import { toGameMinutes } from './time.js';
 type MutableBodyPart = {
   part_id: string;
   parent_id: string | null;
+  placement: PartPlacement | null;
   name: string;
-  description: string;
   roles: string[];
   attributes: {
     geometry: {
@@ -68,11 +69,23 @@ function applyOperation(part: MutableBodyPart, operation: AttributeOperation): v
     case 'geometry.depth':
       part.attributes.geometry.depth = applyNumeric(part.attributes.geometry.depth, operation);
       return;
+    case 'placement.horizontal':
+      part.placement = { ...part.placement!, horizontal: applyNumeric(part.placement!.horizontal, operation) };
+      return;
+    case 'placement.vertical':
+      part.placement = { ...part.placement!, vertical: applyNumeric(part.placement!.vertical, operation) };
+      return;
+    case 'placement.depth':
+      part.placement = { ...part.placement!, depth: applyNumeric(part.placement!.depth, operation) };
+      return;
     case 'geometry.shape':
       part.attributes.geometry.shape = operation.value;
       return;
     case 'composition':
       part.attributes.composition = clone(operation.value) as Record<string, number>;
+      return;
+    case 'placement':
+      part.placement = clone(operation.value) as PartPlacement | null;
       return;
     case 'mechanics.stiffness':
       part.attributes.mechanics.stiffness = applyNumeric(part.attributes.mechanics.stiffness, operation);

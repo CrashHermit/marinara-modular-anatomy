@@ -36,17 +36,24 @@ export interface PartAttributes {
   readonly functions: readonly AnatomicalFunction[];
 }
 
+export interface PartPlacement {
+  readonly horizontal: number;
+  readonly vertical: number;
+  readonly depth: number;
+}
+
 export interface BodyPart {
   readonly part_id: string;
   readonly parent_id: string | null;
+  readonly placement: PartPlacement | null;
   readonly name: string;
-  readonly description: string;
   readonly roles: readonly string[];
   readonly attributes: PartAttributes;
 }
 
-export interface BodyDataset {
+export interface AnatomyTemplate {
   readonly template_id: string;
+  readonly name: string;
   readonly units: {
     readonly length: 'cm';
   };
@@ -58,7 +65,10 @@ export type NumericField =
   | 'geometry.length'
   | 'geometry.width'
   | 'geometry.depth'
-  | 'mechanics.stiffness';
+  | 'mechanics.stiffness'
+  | 'placement.horizontal'
+  | 'placement.vertical'
+  | 'placement.depth';
 
 type NumericAttributeOperation = {
   readonly field: NumericField;
@@ -83,6 +93,7 @@ export type AttributeOperation =
   | CompositionComponentOperation
   | SetOperation<'geometry.shape', string>
   | SetOperation<'composition', PartComposition>
+  | SetOperation<'placement', PartPlacement | null>
   | SetOperation<'surface.coverings', readonly string[]>
   | SetOperation<'surface.color', string>
   | SetOperation<'surface.texture', string>
@@ -102,3 +113,4 @@ export interface Anatomy {
   readonly parts: readonly BodyPart[];
   readonly statuses: readonly TemporaryStatus[];
 }
+

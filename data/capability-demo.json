@@ -1,0 +1,53 @@
+{
+  "bundle_id": "basic-capabilities-demo",
+  "template_id": "humanoid-functional-basic",
+  "parts": [
+    {
+      "part_id": "organ.demo",
+      "parent_id": "torso",
+      "placement": { "horizontal": 50, "vertical": 25, "depth": 50 },
+      "name": "Demo gland",
+      "roles": ["organ"],
+      "attributes": {
+        "geometry": { "length": 4, "width": 3, "depth": 2, "shape": "ellipsoid" },
+        "composition": { "other_soft_tissue": 1 },
+        "mechanics": { "stiffness": 0.5 },
+        "surface": { "coverings": ["tissue"], "color": "#c58c70", "texture": "smooth", "markings": [] },
+        "functions": ["produce", "store"]
+      }
+    }
+  ],
+  "materials": [
+    { "material_id": "demo-fluid", "name": "Demo fluid", "unit": "ml" }
+  ],
+  "capabilities": [
+    {
+      "capability_id": "arm.left.manipulator",
+      "part_id": "arm.left",
+      "name": "Left arm manipulation",
+      "type": "manipulator",
+      "properties": { "volume_factor": 1, "precision": 0.8, "reach_per_cm": 1, "grip_units_per_cm3": 0.001 }
+    },
+    {
+      "capability_id": "arm.right.manipulator",
+      "part_id": "arm.right",
+      "name": "Right arm manipulation",
+      "type": "manipulator",
+      "properties": { "volume_factor": 1, "precision": 0.8, "reach_per_cm": 1, "grip_units_per_cm3": 0.001 }
+    },
+    {
+      "capability_id": "organ.demo.reservoir",
+      "part_id": "organ.demo",
+      "name": "Demo fluid reservoir",
+      "type": "reservoir",
+      "properties": { "volume_factor": 0.5235987755982988, "material_id": "demo-fluid", "capacity_units_per_cm3": 0.5 }
+    },
+    {
+      "capability_id": "organ.demo.producer",
+      "part_id": "organ.demo",
+      "name": "Demo fluid production",
+      "type": "producer",
+      "properties": { "volume_factor": 0.5235987755982988, "material_id": "demo-fluid", "destination_reservoir_id": "organ.demo.reservoir", "rate_units_per_cm3_per_minute": 0.001 }
+    }
+  ]
+}

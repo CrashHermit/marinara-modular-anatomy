@@ -47,6 +47,14 @@ export async function activate(context: MarinaraPackageContext): Promise<() => v
       stringBody(request, 'part_id'),
       stringBody(request, 'effect_id'),
     )));
+    app.post('/body/capabilities/install-demo', (request, reply) => route(reply, () => service.installCapabilityDemo(
+      stringBody(request, 'chat_id'),
+      subjectFrom(request.body ?? {}),
+    )));
+    app.post('/body/capabilities/advance', (request, reply) => route(reply, () => service.advanceCapabilities(
+      stringBody(request, 'chat_id'),
+      subjectFrom(request.body ?? {}),
+    )));
     app.post('/body/statuses/remove', (request, reply) => route(reply, () => service.removeStatus(
       stringBody(request, 'chat_id'),
       subjectFrom(request.body ?? {}),
@@ -101,6 +109,28 @@ function toolRegistrations(service: ReturnType<typeof createAnatomyService>): re
         additionalProperties: false,
       },
       handler: (args, call) => service.applyEffect(call.chatId, subjectFrom(args), stringArg(args, 'part_id'), stringArg(args, 'effect_id')),
+    },
+    {
+      name: 'install_capability_demo',
+      description: 'Add the fictional manipulator, producer, and reservoir demonstration capabilities without replacing existing anatomy.',
+      parameters: {
+        type: 'object',
+        properties: subjectProperties,
+        required: ['subject_kind', 'subject_id'],
+        additionalProperties: false,
+      },
+      handler: (args, call) => service.installCapabilityDemo(call.chatId, subjectFrom(args)),
+    },
+    {
+      name: 'advance_capabilities',
+      description: 'Settle installed capability production to the existing native game time without advancing the game clock.',
+      parameters: {
+        type: 'object',
+        properties: subjectProperties,
+        required: ['subject_kind', 'subject_id'],
+        additionalProperties: false,
+      },
+      handler: (args, call) => service.advanceCapabilities(call.chatId, subjectFrom(args)),
     },
     {
       name: 'remove_status',
