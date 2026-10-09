@@ -195,7 +195,7 @@ class ModularAnatomyElement extends HTMLElement {
     root.append(message(`Template: ${this.body.template_id ?? 'not initialized'}`));
     if (this.body.state === 'clock_uninitialized') root.append(message('Baseline is available; effective temporary values are not resolved until native numeric time exists.'));
     root.append(effectControls(this.body, (part_id, effect_id) => void this.applyEffect(part_id, effect_id)));
-    root.append(statusControls(this.body.statuses, (status_id) => void this.removeStatus(status_id)));
+    root.append(statusControls(this.body.statuses, this.body.game_time, (status_id) => void this.removeStatus(status_id)));
     root.append(partsTable(this.body));
     this.replaceChildren(root);
   }
@@ -233,15 +233,21 @@ function effectControls(body: AnatomyBody, apply: (part_id: string, effect_id: s
   return section;
 }
 
-function statusControls(statuses: readonly TemporaryStatus[], remove: (status_id: string) => void): HTMLElement {
+function statusControls(
+  statuses: readonly TemporaryStatus[],
+  gameTime: { readonly day: number; readonly hour: number; readonly minute: number } | null,
+  remove: (status_id: string) => void,
+): HTMLElement {
   const section = document.createElement('section');
   section.append(heading('Temporary statuses'));
   if (!statuses.length) section.append(message('None stored.'));
   for (const status of statuses) {
-    const row = document.createElement('div');
-    row.className = 'status';
     const expiry = status.expires_at ? ` until ${formatGameTime(status.expires_at)}` : ' with no expiry';
-    row.append(text(`${status.part_id} · starts ${formatGameTime(status.starts_at)}${expiry}`));
+    const expired = gameTime !== null && status.expires_at !== null && compareGameTime(gameTime, status.expires_at) >= 0;
+    const state = status.expires_at === null ? 'Active' : expired ? 'Expired' : 'Active';
+    const row = document.createElement('div');
+    row.className = `status ${expired ? 'expired' : 'active'}`;
+    row.append(text(`${state} · ${status.part_id} · starts ${formatGameTime(status.starts_at)}${expiry}`));
     const button = document.createElement('button');
     button.type = 'button';
     button.textContent = 'Remove';
@@ -326,6 +332,13 @@ function formatGameTime(time: { readonly day: number; readonly hour: number; rea
   return `day ${time.day}, ${String(time.hour).padStart(2, '0')}:${String(time.minute).padStart(2, '0')}`;
 }
 
+function compareGameTime(
+  left: { readonly day: number; readonly hour: number; readonly minute: number },
+  right: { readonly day: number; readonly hour: number; readonly minute: number },
+): number {
+  return (left.day - right.day) * 1440 + (left.hour - right.hour) * 60 + left.minute - right.minute;
+}
+
 function formatNumber(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
 }
@@ -382,6 +395,7 @@ function styleNode(): HTMLStyleElement {
     .modular-anatomy pre { overflow: auto; color: inherit; opacity: 0.9; white-space: pre-wrap; }
     .modular-anatomy .part-index { margin: 0; padding-left: 1.25rem; }
     .modular-anatomy .status { align-items: center; display: flex; gap: 0.5rem; justify-content: space-between; }
+    .modular-anatomy .status.expired { opacity: 0.7; }
   `;
   return style;
 }

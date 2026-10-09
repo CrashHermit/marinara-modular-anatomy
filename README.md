@@ -40,7 +40,7 @@ npm run package
 `npm run package` produces:
 
 ```text
-artifacts/modular-anatomy/modular-anatomy-0.1.3.zip
+artifacts/modular-anatomy/modular-anatomy-0.1.4.zip
 artifacts/modular-anatomy/release.json
 ```
 
@@ -56,7 +56,7 @@ The repository workflow publishes the catalog and ZIP automatically at:
 
 ```text
 https://crashhermit.github.io/marinara-modular-anatomy/catalog.json
-https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.3.zip
+https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.4.zip
 ```
 
 Configure Marinara with:
@@ -81,6 +81,8 @@ For a different public origin, replace the example URL. No package is uploaded t
 The package is listed under Agents because that is Marinara's current installation and detail-panel surface. `execution: "feature"` plus `runtimeDisabled: true` means it contributes UI, tools, and read-only prompt context without being an autonomous pipeline Agent.
 
 The anatomy detail panel presents a readable body-part index followed by one card per permanent part. Each card shows the description, parent attachment, geometry, composition percentages, surface/mechanics, and anatomical functions. Baseline and currently effective values are shown together; temporary status rows show the affected part and native start/expiry time. The panel remains the supported current-surface UI and does not add a second Game screen.
+
+Expired temporary statuses remain stored for explicit removal and auditability, but the detail panel now labels them `Expired` once native numeric game time reaches their exclusive expiry. Their effective anatomy is no longer altered, as shown by the baseline/effective comparison.
 
 ## Integration behavior and limits
 
