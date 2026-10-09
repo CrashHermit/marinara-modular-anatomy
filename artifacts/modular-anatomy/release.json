@@ -2,8 +2,8 @@
   "id": "modular-anatomy",
   "version": "0.1.0",
   "archive": "/home/joshua/projects/marinara-extension/artifacts/modular-anatomy/modular-anatomy-0.1.0.zip",
-  "sha256": "cc8e41c188b8b83f1fd3cb5241d2444311fbd78528edb2372e02336a22521c06",
-  "bytes": 9448,
+  "sha256": "2b1f1893badc5a7485b6db538befd352f21a95288dad3cc8729f3ff3aba93322",
+  "bytes": 9456,
   "manifest": {
     "schemaVersion": 2,
     "id": "modular-anatomy",
@@ -45,8 +45,8 @@
       },
       {
         "path": "client.js",
-        "sha256": "11d8d80cb93d6141240ccc601f2a5b46085dac29c7f28792d529f79eaa8b8fc8",
-        "bytes": 12398
+        "sha256": "33dcd739affdfd4605e16a997ae6b4fa45dc9c2dab1eb0f6bf57eee7f284b510",
+        "bytes": 12437
       },
       {
         "path": "agents.json",

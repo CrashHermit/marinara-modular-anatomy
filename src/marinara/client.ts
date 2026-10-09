@@ -173,7 +173,7 @@ class ModularAnatomyElement extends HTMLElement {
     subjectLabel.append(subjectSelect);
     root.append(subjectLabel);
 
-    if (!this.body) {
+    if (!this.body || this.body.state === 'uninitialized') {
       const initialize = document.createElement('button');
       initialize.type = 'button';
       initialize.textContent = 'Initialize authored body template';
