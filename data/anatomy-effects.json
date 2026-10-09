@@ -1,0 +1,34 @@
+[
+  {
+    "effect_id": "temporary-arm-growth",
+    "name": "Temporary arm growth",
+    "description": "Adds three centimetres to the selected arm for two native game hours.",
+    "eligible_part_ids": ["arm.left", "arm.right"],
+    "operations": [
+      { "field": "geometry.length", "op": "add", "value": 3 }
+    ],
+    "lifetime": { "kind": "temporary", "duration_minutes": 120 }
+  },
+  {
+    "effect_id": "temporary-scales",
+    "name": "Temporary scales",
+    "description": "Adds a scale covering and changes stiffness for two native game hours.",
+    "eligible_part_ids": ["arm.left", "arm.right"],
+    "operations": [
+      { "field": "surface.coverings", "op": "set", "value": ["skin", "scales"] },
+      { "field": "mechanics.stiffness", "op": "set", "value": 0.8 }
+    ],
+    "lifetime": { "kind": "temporary", "duration_minutes": 120 }
+  },
+  {
+    "effect_id": "permanent-composition-shift",
+    "name": "Permanent composition shift",
+    "description": "Sets the selected arm's authored muscle and fat proportions.",
+    "eligible_part_ids": ["arm.left", "arm.right"],
+    "operations": [
+      { "field": "composition.muscle", "op": "set", "value": 0.45 },
+      { "field": "composition.fat", "op": "set", "value": 0.25 }
+    ],
+    "lifetime": { "kind": "permanent" }
+  }
+]

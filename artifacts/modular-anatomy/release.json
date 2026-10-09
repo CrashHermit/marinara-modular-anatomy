@@ -1,0 +1,68 @@
+{
+  "id": "modular-anatomy",
+  "version": "0.1.0",
+  "archive": "/home/joshua/projects/marinara-extension/artifacts/modular-anatomy/modular-anatomy-0.1.0.zip",
+  "sha256": "7ba68a60e69ed8b262c6cd1c919d009334d5ae8aa69d59c043707fb9fb7b8872",
+  "bytes": 9448,
+  "manifest": {
+    "schemaVersion": 2,
+    "id": "modular-anatomy",
+    "name": "Modular Anatomy",
+    "version": "0.1.0",
+    "description": "Deterministic persistent anatomy state and authored physical effects for active Marinara Games.",
+    "capabilityApi": {
+      "major": 1,
+      "minor": 66
+    },
+    "builtAgainst": {
+      "engineVersion": "2.5.0",
+      "engineCommit": "c56501495a8baf76c258e76534c8728a9b7859bb"
+    },
+    "engine": {
+      "min": "2.5.0",
+      "maxExclusive": "2.6.0"
+    },
+    "kind": [
+      "agent"
+    ],
+    "entrypoints": {
+      "server": "server.mjs",
+      "client": "client.js",
+      "agents": "agents.json"
+    },
+    "contributions": {
+      "agentDetail": {
+        "agentIds": [
+          "modular-anatomy"
+        ]
+      }
+    },
+    "files": [
+      {
+        "path": "server.mjs",
+        "sha256": "6d9a4c443f96cb695684770a1a173e1058d2fd853a6a164506a45aeaac465366",
+        "bytes": 22619
+      },
+      {
+        "path": "client.js",
+        "sha256": "11d8d80cb93d6141240ccc601f2a5b46085dac29c7f28792d529f79eaa8b8fc8",
+        "bytes": 12398
+      },
+      {
+        "path": "agents.json",
+        "sha256": "6d651bb5c1afb7abb07a9c4a9cb2e432c0506f5c7a5e2dcb3cacd02e00ad0be5",
+        "bytes": 433
+      }
+    ],
+    "permissions": [
+      "agent-runtime",
+      "chat-read",
+      "storage",
+      "tools",
+      "prompt-context",
+      "routes",
+      "ui"
+    ],
+    "restartRequired": true
+  }
+}

@@ -1,0 +1,15 @@
+[
+  {
+    "id": "modular-anatomy",
+    "name": "Modular Anatomy",
+    "description": "Deterministic persistent anatomy state and authored physical effects for active Marinara Games.",
+    "phase": "pre_generation",
+    "enabledByDefault": false,
+    "defaultInjectAsSection": false,
+    "category": "misc",
+    "modeAllowlist": ["game"],
+    "runtimeDisabled": true,
+    "defaultPromptTemplate": "",
+    "execution": "feature"
+  }
+]

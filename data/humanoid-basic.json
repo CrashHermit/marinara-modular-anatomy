@@ -1,0 +1,86 @@
+{
+  "template_id": "humanoid-functional-basic",
+  "units": {
+    "length": "cm"
+  },
+  "parts": [
+    {
+      "part_id": "body",
+      "parent_id": null,
+      "name": "Body",
+      "description": "The full-body structural aggregate.",
+      "attributes": {
+        "geometry": { "length": 180, "width": 50, "depth": 30, "shape": "aggregate" },
+        "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
+        "mechanics": { "stiffness": 0.5 },
+        "surface": { "coverings": ["skin"], "color": "#c58c70", "texture": "smooth", "markings": [] },
+        "functions": []
+      }
+    },
+    {
+      "part_id": "torso",
+      "parent_id": "body",
+      "name": "Torso",
+      "description": "The trunk between the neck and pelvis.",
+      "attributes": {
+        "geometry": { "length": 60, "width": 40, "depth": 25, "shape": "tapered_box" },
+        "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
+        "mechanics": { "stiffness": 0.5 },
+        "surface": { "coverings": ["skin"], "color": "#c58c70", "texture": "smooth", "markings": [] },
+        "functions": []
+      }
+    },
+    {
+      "part_id": "arm.left",
+      "parent_id": "torso",
+      "name": "Left arm",
+      "description": "A composite upper limb including the hand.",
+      "attributes": {
+        "geometry": { "length": 60, "width": 10, "depth": 10, "shape": "tapered_cylinder" },
+        "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
+        "mechanics": { "stiffness": 0.5 },
+        "surface": { "coverings": ["skin"], "color": "#c58c70", "texture": "smooth", "markings": [] },
+        "functions": ["manipulation"]
+      }
+    },
+    {
+      "part_id": "arm.right",
+      "parent_id": "torso",
+      "name": "Right arm",
+      "description": "A composite upper limb including the hand.",
+      "attributes": {
+        "geometry": { "length": 60, "width": 10, "depth": 10, "shape": "tapered_cylinder" },
+        "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
+        "mechanics": { "stiffness": 0.5 },
+        "surface": { "coverings": ["skin"], "color": "#c58c70", "texture": "smooth", "markings": [] },
+        "functions": ["manipulation"]
+      }
+    },
+    {
+      "part_id": "leg.left",
+      "parent_id": "torso",
+      "name": "Left leg",
+      "description": "A composite lower limb including the foot.",
+      "attributes": {
+        "geometry": { "length": 90, "width": 15, "depth": 15, "shape": "tapered_cylinder" },
+        "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
+        "mechanics": { "stiffness": 0.5 },
+        "surface": { "coverings": ["skin"], "color": "#c58c70", "texture": "smooth", "markings": [] },
+        "functions": ["locomotion"]
+      }
+    },
+    {
+      "part_id": "leg.right",
+      "parent_id": "torso",
+      "name": "Right leg",
+      "description": "A composite lower limb including the foot.",
+      "attributes": {
+        "geometry": { "length": 90, "width": 15, "depth": 15, "shape": "tapered_cylinder" },
+        "composition": { "bone": 0.2, "muscle": 0.55, "fat": 0.15, "other_soft_tissue": 0.1 },
+        "mechanics": { "stiffness": 0.5 },
+        "surface": { "coverings": ["skin"], "color": "#c58c70", "texture": "smooth", "markings": [] },
+        "functions": ["locomotion"]
+      }
+    }
+  ]
+}

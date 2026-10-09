@@ -1,0 +1,28 @@
+{
+  "name": "modular-anatomy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "demo": "npm run build && node dist/examples/demo.js",
+    "package": "npm run build && node scripts/build-package.mjs",
+    "catalog": "node scripts/build-catalog.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "adm-zip": "0.5.16",
+    "esbuild": "0.25.12",
+    "typescript": "5.9.3"
+  }
+}
