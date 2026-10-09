@@ -1,14 +1,14 @@
 {
   "id": "modular-anatomy",
-  "version": "0.1.0",
-  "archive": "/home/joshua/projects/marinara-extension/artifacts/modular-anatomy/modular-anatomy-0.1.0.zip",
-  "sha256": "2b1f1893badc5a7485b6db538befd352f21a95288dad3cc8729f3ff3aba93322",
-  "bytes": 9456,
+  "version": "0.1.1",
+  "archive": "/home/joshua/projects/marinara-extension/artifacts/modular-anatomy/modular-anatomy-0.1.1.zip",
+  "sha256": "77f5aa1f4c4819673dc6bb2dcfa10e02e598eb3bc0e84813f22774d0f4eafcff",
+  "bytes": 9457,
   "manifest": {
     "schemaVersion": 2,
     "id": "modular-anatomy",
     "name": "Modular Anatomy",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Deterministic persistent anatomy state and authored physical effects for active Marinara Games.",
     "capabilityApi": {
       "major": 1,
