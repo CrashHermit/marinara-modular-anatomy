@@ -41,7 +41,26 @@ export interface ProducerCapability extends PartCapabilityBase {
   };
 }
 
-export type PartCapability = ManipulatorCapability | ReservoirCapability | ProducerCapability;
+export interface SensorInput {
+  readonly channel: string;
+  readonly sensitivity: number;
+}
+
+export interface SensorOutput {
+  readonly channel: string;
+  readonly gain: number;
+  readonly input_channels: readonly string[];
+}
+
+export interface SensorCapability extends PartCapabilityBase {
+  readonly type: 'sensor';
+  readonly properties: {
+    readonly inputs: readonly SensorInput[];
+    readonly outputs: readonly SensorOutput[];
+  };
+}
+
+export type PartCapability = ManipulatorCapability | ReservoirCapability | ProducerCapability | SensorCapability;
 
 export interface CapabilityState {
   readonly definitions: readonly PartCapability[];
@@ -56,11 +75,11 @@ interface ResolvedPartCapabilityBase {
   readonly part_id: string;
   readonly part_name: string;
   readonly name: string;
-  readonly volume_cm3: number;
 }
 
 export interface ResolvedManipulatorCapability extends ResolvedPartCapabilityBase {
   readonly type: 'manipulator';
+  readonly volume_cm3: number;
   readonly precision: number;
   readonly reach_cm: number;
   readonly grip_units: number;
@@ -68,21 +87,30 @@ export interface ResolvedManipulatorCapability extends ResolvedPartCapabilityBas
 
 export interface ResolvedReservoirCapability extends ResolvedPartCapabilityBase {
   readonly type: 'reservoir';
+  readonly volume_cm3: number;
   readonly material_id: string;
   readonly capacity: number;
 }
 
 export interface ResolvedProducerCapability extends ResolvedPartCapabilityBase {
   readonly type: 'producer';
+  readonly volume_cm3: number;
   readonly material_id: string;
   readonly destination_reservoir_id: string;
   readonly rate_per_minute: number;
 }
 
+export interface ResolvedSensorCapability extends ResolvedPartCapabilityBase {
+  readonly type: 'sensor';
+  readonly inputs: readonly SensorInput[];
+  readonly outputs: readonly SensorOutput[];
+}
+
 export type ResolvedPartCapability =
   | ResolvedManipulatorCapability
   | ResolvedReservoirCapability
-  | ResolvedProducerCapability;
+  | ResolvedProducerCapability
+  | ResolvedSensorCapability;
 
 export interface CapabilityBundle {
   readonly bundle_id: string;

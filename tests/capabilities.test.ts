@@ -7,6 +7,7 @@ import {
   createCapabilityState,
   installCapabilityBundle,
   resolveCapabilities,
+  resolveSensor,
   type Anatomy,
   type BodyPart,
   type CapabilityBundle,
@@ -19,7 +20,6 @@ const part = (part_id: string, length = 4): BodyPart => ({
   parent_id: null,
   placement: null,
   name: part_id,
-  roles: ['organ'],
   attributes: {
     geometry: { length, width: 3, depth: 2, shape: 'test' },
     composition: { other_soft_tissue: 1 },
@@ -77,6 +77,31 @@ test('capability derivation supports multiple components and geometry-derived va
   assert.equal((resolved[0] as { grip_units: number }).grip_units, 0.024);
   assert.equal((resolved[1] as { type: string; capacity: number }).capacity, 6);
   assert.equal((resolved[2] as { type: string; rate_per_minute: number }).rate_per_minute, 0.012);
+});
+
+test('sensor capabilities map physical inputs to explicit semantic outputs', () => {
+  const definition = {
+    capability_id: 'organ.sensor',
+    part_id: 'organ',
+    name: 'Sensation',
+    type: 'sensor' as const,
+    properties: {
+      inputs: [
+        { channel: 'pressure', sensitivity: 0.8 },
+        { channel: 'friction', sensitivity: 0.6 },
+      ],
+      outputs: [
+        { channel: 'pleasure', gain: 0.9, input_channels: ['pressure', 'friction'] },
+        { channel: 'pain', gain: 0.2, input_channels: ['pressure'] },
+      ],
+    },
+  };
+  const resolved = resolveCapabilities([definition], [part('organ')])[0];
+  assert.equal(resolved?.type, 'sensor');
+  assert.deepEqual(resolveSensor(definition, { pressure: 0.5, friction: 0.25 }), {
+    inputs: { pressure: 0.5, friction: 0.25 },
+    outputs: { pleasure: 0.49500000000000005, pain: 0.08000000000000002 },
+  });
 });
 
 test('production anchors at first time and settles geometry status intervals exactly', () => {

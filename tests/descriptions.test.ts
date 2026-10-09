@@ -12,7 +12,6 @@ const root: BodyPart = {
   parent_id: null,
   placement: null,
   name: 'Body',
-  roles: ['aggregate_role'],
   attributes: {
     geometry: { length: 100, width: 50, depth: 40, shape: 'root_box' },
     composition: { muscle: 0.5, bone: 0.5 },
@@ -27,7 +26,6 @@ const parent: BodyPart = {
   parent_id: 'body',
   placement: { horizontal: 50, vertical: 50, depth: 50 },
   name: 'Parent',
-  roles: ['container_role'],
   attributes: {
     geometry: { length: 60, width: 20, depth: 10, shape: 'parent_box' },
     composition: { muscle: 1 },
@@ -42,7 +40,6 @@ const child: BodyPart = {
   parent_id: 'parent',
   placement: { horizontal: 0, vertical: 100, depth: 50 },
   name: 'Child',
-  roles: ['some_role'],
   attributes: {
     geometry: { length: 30, width: 5, depth: 2, shape: 'strange_shape' },
     composition: { bone: 0.2, muscle: 0.55, fat: 0.25 },
@@ -73,7 +70,6 @@ test('generated descriptions include structural facts and deterministic labels',
   assert.match(childText, /Stiffness: 75%/);
   assert.match(childText, /coverings none/);
   assert.match(childText, /texture rough surface/);
-  assert.match(childText, /Roles: some role/);
   assert.match(childText, /Functions: some function/);
 });
 
@@ -95,7 +91,6 @@ test('effective descriptions track temporary data and restore at expiry', () => 
       { field: 'geometry.length', op: 'set', value: 63 },
       { field: 'surface.coverings', op: 'set', value: ['scales'] },
       { field: 'composition', op: 'set', value: { altered_material: 1 } },
-      { field: 'roles', op: 'set', value: ['altered_role'] },
       { field: 'functions', op: 'set', value: ['altered_function'] },
     ],
   });
@@ -104,7 +99,6 @@ test('effective descriptions track temporary data and restore at expiry', () => 
   assert.match(active.find((item) => item.part_id === 'child')!.text, /length 63 cm/);
   assert.match(active.find((item) => item.part_id === 'child')!.text, /coverings scales/);
   assert.match(active.find((item) => item.part_id === 'child')!.text, /altered material 100%/);
-  assert.match(active.find((item) => item.part_id === 'child')!.text, /Roles: altered role/);
   assert.match(expired.find((item) => item.part_id === 'child')!.text, /length 30 cm/);
   assert.match(expired.find((item) => item.part_id === 'child')!.text, /coverings none/);
   assert.match(expired.find((item) => item.part_id === 'child')!.text, /bone 20%/);
@@ -126,11 +120,10 @@ test('position boundaries and fractional formatting are stable', () => {
 
 test('empty part collections and empty authored lists remain readable', () => {
   assert.deepEqual(describeParts([]), []);
-  const text = description([{ ...root, roles: [], attributes: { ...root.attributes, composition: {}, surface: { ...root.attributes.surface, coverings: [], markings: [] }, functions: [] } }], 'body');
+  const text = description([{ ...root, attributes: { ...root.attributes, composition: {}, surface: { ...root.attributes.surface, coverings: [], markings: [] }, functions: [] } }], 'body');
   assert.match(text, /Composition: none/);
   assert.match(text, /coverings none/);
   assert.match(text, /markings none/);
-  assert.match(text, /Roles: none/);
   assert.match(text, /Functions: none/);
 });
 

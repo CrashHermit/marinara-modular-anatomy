@@ -48,9 +48,11 @@ function derivedRows(
   materials: ReadonlyMap<string, { readonly name: string; readonly unit: string }>,
   body: AnatomyBody,
 ): readonly (readonly [string, string, string | null])[] {
-  const rows: Array<readonly [string, string, string | null]> = [
-    ['Volume', `${formatNumber(base.volume_cm3)} cm³`, current ? `${formatNumber(current.volume_cm3)} cm³` : null],
-  ];
+  const rows: Array<readonly [string, string, string | null]> = [];
+  if (base.type !== 'sensor') {
+    const currentVolume = current && current.type !== 'sensor' ? `${formatNumber(current.volume_cm3)} cm³` : null;
+    rows.push(['Volume', `${formatNumber(base.volume_cm3)} cm³`, currentVolume]);
+  }
   if (base.type === 'manipulator') {
     const currentManipulator = current?.type === 'manipulator' ? current : null;
     rows.push(
@@ -79,6 +81,13 @@ function derivedRows(
       ['Rate', `${formatNumber(base.rate_per_minute)} ${material?.unit ?? 'units'}/native minute`, currentProducer ? `${formatNumber(currentProducer.rate_per_minute)} ${material?.unit ?? 'units'}/native minute` : null],
     );
   }
+  if (base.type === 'sensor') {
+    const currentSensor = current?.type === 'sensor' ? current : null;
+    rows.push(
+      ['Inputs', base.inputs.map((input) => `${input.channel} × ${formatNumber(input.sensitivity)}`).join(', '), currentSensor ? currentSensor.inputs.map((input) => `${input.channel} × ${formatNumber(input.sensitivity)}`).join(', ') : null],
+      ['Outputs', base.outputs.map((output) => `${output.channel} × ${formatNumber(output.gain)} from ${output.input_channels.join(', ')}`).join(', '), currentSensor ? currentSensor.outputs.map((output) => `${output.channel} × ${formatNumber(output.gain)} from ${output.input_channels.join(', ')}`).join(', ') : null],
+    );
+  }
   return rows;
 }
 
@@ -102,6 +111,12 @@ function authoredRows(
       ['Volume factor', formatNumber(properties.volume_factor), formatNumber(properties.volume_factor)],
       ['Material', material?.name ?? properties.material_id, material?.name ?? properties.material_id],
       ['Capacity units per cm³', `${formatNumber(properties.capacity_units_per_cm3)} ${material?.unit ?? 'units'}`, `${formatNumber(properties.capacity_units_per_cm3)} ${material?.unit ?? 'units'}`],
+    ];
+  }
+  if (definition.type === 'sensor') {
+    return [
+      ['Inputs', definition.properties.inputs.map((input) => `${input.channel} × ${formatNumber(input.sensitivity)}`).join(', '), definition.properties.inputs.map((input) => `${input.channel} × ${formatNumber(input.sensitivity)}`).join(', ')],
+      ['Outputs', definition.properties.outputs.map((output) => `${output.channel} × ${formatNumber(output.gain)} from ${output.input_channels.join(', ')}`).join(', '), definition.properties.outputs.map((output) => `${output.channel} × ${formatNumber(output.gain)} from ${output.input_channels.join(', ')}`).join(', ')],
     ];
   }
   const properties = definition.properties;

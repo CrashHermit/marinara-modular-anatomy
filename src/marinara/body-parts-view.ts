@@ -41,9 +41,6 @@ export function partsTable(body: AnatomyBody): HTMLElement {
       ['Texture', baseline.attributes.surface.texture, current?.attributes.surface.texture ?? null],
       ['Markings', baseline.attributes.surface.markings.join(', ') || 'none', current ? current.attributes.surface.markings.join(', ') || 'none' : null],
     ]));
-    article.append(attributeGroup('Roles', [
-      ['Roles', formatList(baseline.roles), current ? formatList(current.roles) : null],
-    ]));
     article.append(attributeGroup('Functions', [
       ['Functions', formatList(baseline.attributes.functions), current ? formatList(current.attributes.functions) : null],
     ]));

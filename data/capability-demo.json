@@ -7,7 +7,6 @@
       "parent_id": "torso",
       "placement": { "horizontal": 50, "vertical": 25, "depth": 50 },
       "name": "Demo gland",
-      "roles": ["organ"],
       "attributes": {
         "geometry": { "length": 4, "width": 3, "depth": 2, "shape": "ellipsoid" },
         "composition": { "other_soft_tissue": 1 },
@@ -48,6 +47,22 @@
       "name": "Demo fluid production",
       "type": "producer",
       "properties": { "volume_factor": 0.5235987755982988, "material_id": "demo-fluid", "destination_reservoir_id": "organ.demo.reservoir", "rate_units_per_cm3_per_minute": 0.001 }
+    },
+    {
+      "capability_id": "organ.demo.sensor",
+      "part_id": "organ.demo",
+      "name": "Demo sensation",
+      "type": "sensor",
+      "properties": {
+        "inputs": [
+          { "channel": "pressure", "sensitivity": 0.8 },
+          { "channel": "friction", "sensitivity": 0.6 }
+        ],
+        "outputs": [
+          { "channel": "pleasure", "gain": 0.9, "input_channels": ["pressure"] },
+          { "channel": "pain", "gain": 0.2, "input_channels": ["friction"] }
+        ]
+      }
     }
   ]
 }

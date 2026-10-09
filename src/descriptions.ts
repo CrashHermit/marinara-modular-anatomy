@@ -65,7 +65,7 @@ export function describeParts(parts: readonly BodyPart[]): readonly PartDescript
       compositionText(part),
       `Stiffness: ${formatNumber(part.attributes.mechanics.stiffness * 100)}%.`,
       `Surface: coverings ${list(part.attributes.surface.coverings)}, color ${part.attributes.surface.color}, texture ${humanize(part.attributes.surface.texture)}, markings ${list(part.attributes.surface.markings)}.`,
-      `Roles: ${list(part.roles)}. Functions: ${list(part.attributes.functions)}.`,
+      `Functions: ${list(part.attributes.functions)}.`,
     ].filter((section) => section.length > 0).join(' ');
     return { part_id: part.part_id, parent_id: part.parent_id, text };
   });

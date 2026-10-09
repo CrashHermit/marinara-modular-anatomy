@@ -22,6 +22,7 @@ export {
   installCapabilityBundle,
   replaceCapability,
   resolveCapabilities,
+  resolveSensor,
 } from './capabilities/index.js';
 export type {
   CapabilityBundle,
@@ -36,6 +37,12 @@ export type {
   ResolvedPartCapability,
   ResolvedProducerCapability,
   ResolvedReservoirCapability,
+  ResolvedSensorCapability,
+  SensorCapability,
+  SensorInput,
+  SensorOutput,
+  SensorReading,
+  SensorStimulus,
 } from './capabilities/index.js';
 export { toGameMinutes } from './time.js';
 export type {

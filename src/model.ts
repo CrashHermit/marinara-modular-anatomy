@@ -47,7 +47,6 @@ export interface BodyPart {
   readonly parent_id: string | null;
   readonly placement: PartPlacement | null;
   readonly name: string;
-  readonly roles: readonly string[];
   readonly attributes: PartAttributes;
 }
 
@@ -98,7 +97,6 @@ export type AttributeOperation =
   | SetOperation<'surface.color', string>
   | SetOperation<'surface.texture', string>
   | SetOperation<'surface.markings', readonly string[]>
-  | SetOperation<'roles', readonly string[]>
   | SetOperation<'functions', readonly AnatomicalFunction[]>;
 
 export interface TemporaryStatus {

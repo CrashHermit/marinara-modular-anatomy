@@ -4,9 +4,9 @@ Standalone TypeScript anatomy core and Marinara Engine capability package.
 
 ## What it owns
 
-The anatomy core stores a single-parent body hierarchy with stable part IDs, parent-relative attachment placement percentages, descriptive bounding-envelope geometry in centimetres, composition fractions, stiffness, coverings, appearance fields, authored `roles`, and extensible `functions`. Roles describe what a part is, while functions describe what it can do. Permanent attributes are the baseline. Ordered temporary statuses resolve against caller-supplied game time; they do not mutate or undo the baseline. Both roles and functions can be changed permanently or through temporary statuses.
+The anatomy core stores a single-parent body hierarchy with stable part IDs, parent-relative attachment placement percentages, descriptive bounding-envelope geometry in centimetres, composition fractions, stiffness, coverings, appearance fields, and extensible functions. Functions describe authored actions a part can perform; behavior with derived properties belongs in typed capabilities. Permanent attributes are the baseline. Ordered temporary statuses resolve against caller-supplied game time; they do not mutate or undo the baseline. Geometry, composition, surface, mechanics, functions, and placement can be changed permanently or through temporary statuses.
 
-Stored part data is canonical numeric and structured data. Part prose is generated transiently from a complete baseline or effective part set, so dimensions, placement, proportions, composition, surface data, roles, and functions cannot drift from the data.
+Stored part data is canonical numeric and structured data. Part prose is generated transiently from a complete baseline or effective part set, so dimensions, placement, proportions, composition, surface data, and functions cannot drift from the data.
 
 The authored effect catalog currently demonstrates:
 
@@ -26,7 +26,7 @@ A native Game or an explicit direct control must invoke an authored effect. The 
 
 The native numeric `metadata.gameTime` is required to resolve temporary effects and settle installed part capabilities. Marinara's formatted narrative snapshot time is a separate representation and is not parsed or silently synchronized by this package. Initialize or advance time using Marinara's existing Game controls, then explicitly invoke the package's effect or capability action.
 
-Part capabilities are separate typed add-ons attached by `part_id`; they do not change the anatomy part model. Manipulators derive reach and grip values from part geometry. Reservoirs derive material capacity from geometry. Producers derive output rate from geometry and settle material into their configured reservoir only when an explicit capability-advance action is invoked. The demo bundle is fictional and opt-in.
+Part capabilities are separate typed add-ons attached by `part_id`; they do not change the anatomy part model. Manipulators derive reach and grip values from part geometry. Reservoirs derive material capacity from geometry. Producers derive output rate from geometry and settle material into their configured reservoir only when an explicit capability-advance action is invoked. Sensors map named physical input channels, such as pressure and friction, to explicitly selected semantic output channels, such as pleasure and pain. The demo bundle is fictional and opt-in.
 
 ## Build and test
 
@@ -37,14 +37,14 @@ npm run demo
 npm run package
 ```
 
-`npm run build` removes only this project's generated `dist/` directory before compiling. The test suite covers core operations, placement boundaries, template isolation, generated description facts, and deterministic effect boundaries. The demo proves the existing 63 -> 65 -> 62 arm-length flow, generated descriptions, stable attachment placement, and restoration of the original covering after expiration.
+`npm run build` removes only this project's generated `dist/` directory before compiling. The test suite covers core operations, placement boundaries, template isolation, generated description facts, deterministic effect boundaries, geometry-derived capabilities, production, and sensor channel mapping. The demo proves the existing 63 -> 65 -> 62 arm-length flow, generated descriptions, stable attachment placement, and restoration of the original covering after expiration.
 
 ## Package output
 
 `npm run package` produces:
 
 ```text
-artifacts/modular-anatomy/modular-anatomy-0.1.6.zip
+artifacts/modular-anatomy/modular-anatomy-0.1.7.zip
 artifacts/modular-anatomy/release.json
 ```
 
@@ -60,7 +60,7 @@ The repository workflow publishes the catalog and ZIP automatically at:
 
 ```text
 https://crashhermit.github.io/marinara-modular-anatomy/catalog.json
-https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.6.zip
+https://crashhermit.github.io/marinara-modular-anatomy/modular-anatomy-0.1.7.zip
 ```
 
 Configure Marinara with:
@@ -84,7 +84,7 @@ For a different public origin, replace the example URL. No package is uploaded t
 
 The package is listed under Agents because that is Marinara's current installation and detail-panel surface. `execution: "feature"` plus `runtimeDisabled: true` means it contributes UI, tools, and read-only prompt context without being an autonomous pipeline Agent.
 
-The anatomy detail panel presents a readable body-part index followed by one card per permanent part. Each card shows a generated factual description derived from the shared baseline or effective part set, parent attachment, geometry, composition percentages, surface/mechanics, roles, and anatomical functions. Baseline and currently effective values are shown together; temporary status rows show the affected part and native start/expiry time. The panel remains the supported current-surface UI and does not add a second Game screen.
+The anatomy detail panel presents a readable body-part index followed by one card per permanent part. Each card shows a generated factual description derived from the shared baseline or effective part set, parent attachment, geometry, composition percentages, surface/mechanics, and anatomical functions. Baseline and currently effective values are shown together; temporary status rows show the affected part and native start/expiry time. The panel remains the supported current-surface UI and does not add a second Game screen.
 
 Expired temporary statuses remain stored for explicit removal and auditability, but the detail panel now labels them `Expired` once native numeric game time reaches their exclusive expiry. Their effective anatomy is no longer altered, as shown by the baseline/effective comparison.
 
@@ -103,11 +103,12 @@ Expired temporary statuses remain stored for explicit removal and auditability, 
 
 - `src/model.ts`, `src/anatomy.ts`, `src/templates.ts`, `src/descriptions.ts`, `src/time.ts`: standalone anatomy model, immutable operations, template construction, and generated factual projections.
 - `src/effects.ts`: standalone deterministic effect application.
-- `data/`: authored body template and demonstration effects.
+- `src/capabilities/`: typed behavior add-ons, geometry-derived resolution, production state, and sensor input/output mapping.
+- `data/`: authored body template and demonstration effects/capabilities.
 - `src/marinara/anatomy-body.ts`, `src/marinara/body-parts-view.ts`: shared baseline/effective projections and readable body-part cards.
 - `src/marinara/`: Marinara persistence, tools, prompt contributor, routes, and detail UI adapter.
 - `packages/modular-anatomy/agents.json`: feature definition shipped inside the package.
 - `scripts/build-catalog.mjs`: catalog generator; no upload logic.
-- `tests/`: permanent core/effect behavior tests.
+- `tests/`: permanent core/effect/capability behavior tests.
 
 The reference Engine directory remains read-only.

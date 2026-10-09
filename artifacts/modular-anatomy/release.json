@@ -1,14 +1,14 @@
 {
   "id": "modular-anatomy",
-  "version": "0.1.6",
-  "archive": "/home/joshua/projects/marinara-extension/artifacts/modular-anatomy/modular-anatomy-0.1.6.zip",
-  "sha256": "fa02bd49a6f8ec6729a1a7a74f8f9d087d6e62f09389c997efee99fb0a369d6b",
-  "bytes": 15373,
+  "version": "0.1.7",
+  "archive": "/home/joshua/projects/marinara-extension/artifacts/modular-anatomy/modular-anatomy-0.1.7.zip",
+  "sha256": "8c26d327dfc6a0797c1ade365c52fee4b15b5029ba0fafa6c0b4f863e0b8b8ff",
+  "bytes": 15635,
   "manifest": {
     "schemaVersion": 2,
     "id": "modular-anatomy",
     "name": "Modular Anatomy",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "Deterministic persistent anatomy state and authored physical effects for active Marinara Games.",
     "capabilityApi": {
       "major": 1,
@@ -40,18 +40,18 @@
     "files": [
       {
         "path": "server.mjs",
-        "sha256": "ed07c1b841f638c38c8b5060dad68f5af143562d3bc2f2f2c64d44c5fecc6e27",
-        "bytes": 39087
+        "sha256": "8a9782e6aab3160764870a8d0dcb5c5e1417569fe864d330a0bacc402be35454",
+        "bytes": 39840
       },
       {
         "path": "client.js",
-        "sha256": "d0ece72193c689d62c888b285957fecd9c4da6a62662c352a95901917f7770f8",
-        "bytes": 27366
+        "sha256": "78a4fbc3720634972df081b09a032d3d15ac1134083504a983175749ba29f891",
+        "bytes": 28710
       },
       {
         "path": "agents.json",
-        "sha256": "6d651bb5c1afb7abb07a9c4a9cb2e432c0506f5c7a5e2dcb3cacd02e00ad0be5",
-        "bytes": 433
+        "sha256": "b2a476ab31ee257c17b5c549a5746f15fc37c9b7ad03be0624c352759c9302f8",
+        "bytes": 432
       }
     ],
     "permissions": [
