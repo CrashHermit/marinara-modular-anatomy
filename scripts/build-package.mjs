@@ -8,9 +8,23 @@ import { build } from 'esbuild';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const packageJson = JSON.parse(await readFile(join(projectRoot, 'package.json'), 'utf8'));
-const engineRoot = resolve(projectRoot, process.env.MARINARA_ENGINE_PATH ?? '../../games/Marinara-Engine');
-const enginePackage = JSON.parse(await readFile(join(engineRoot, 'package.json'), 'utf8'));
-const engineCommit = execFileSync('git', ['-C', engineRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+const configuredEngineRoot = process.env.MARINARA_ENGINE_PATH;
+const engineRoot = resolve(projectRoot, configuredEngineRoot ?? '../../games/Marinara-Engine');
+const verifiedEngine = {
+  version: '2.5.0',
+  commit: 'c56501495a8baf76c258e76534c8728a9b7859bb',
+};
+let engineVersion = process.env.MARINARA_ENGINE_VERSION;
+let engineCommit = process.env.MARINARA_ENGINE_COMMIT;
+try {
+  const enginePackage = JSON.parse(await readFile(join(engineRoot, 'package.json'), 'utf8'));
+  engineVersion ??= enginePackage.version;
+  engineCommit ??= execFileSync('git', ['-C', engineRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+} catch (error) {
+  if (configuredEngineRoot || error.code !== 'ENOENT') throw error;
+  engineVersion ??= verifiedEngine.version;
+  engineCommit ??= verifiedEngine.commit;
+}
 const version = packageJson.version;
 const staging = join(projectRoot, '.package-build', 'modular-anatomy');
 const artifacts = join(projectRoot, 'artifacts', 'modular-anatomy');
@@ -56,7 +70,7 @@ const manifest = {
   version,
   description: 'Deterministic persistent anatomy state and authored physical effects for active Marinara Games.',
   capabilityApi: { major: 1, minor: 66 },
-  builtAgainst: { engineVersion: enginePackage.version, engineCommit },
+  builtAgainst: { engineVersion, engineCommit },
   engine: { min: '2.5.0', maxExclusive: '2.6.0' },
   kind: ['agent'],
   entrypoints: { server: 'server.mjs', client: 'client.js', agents: 'agents.json' },
